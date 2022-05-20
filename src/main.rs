@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand};
+use json::object;
 use std::fs::OpenOptions;
 
 #[derive(Parser)]
@@ -39,14 +40,50 @@ fn create_project (project_name: String, path: std::path::PathBuf, force: bool) 
         true => OpenOptions::new().write(true).create(true).open(path.with_file_name(file_name))
     };
 
-    let _file = match result {
+    let mut file = match result {
         Ok(file) => { file },
         Err(error) => { 
-            println!("{}", error.kind());
-            panic!("Can't deal with {}, just exit here", error); }
-    };
-    
+            match error.kind() {
+                std::io::ErrorKind::AlreadyExists => {
+                    println!("The file already exists. Use 'init --force' if you want to overwrite it.");
+                    std::process::exit(-1)
+                },
+                _ => {
+                    println!("Unknown error creating project file '{}'. Please file an issue: https://github.com/drazisil/nodepm/issues/new", error);
+                    std::process::exit(-1)
 
+                }
+            };
+        }
+    };
+
+    let mut project_json = object!{};
+    let result = project_json.insert("name", project_name);
+    match result {
+        Err(error) => {
+            println!("Unknown error truncating adding name to json array on project file '{}'. Please file an issue: https://github.com/drazisil/nodepm/issues/new", error);
+            std::process::exit(-1);
+        },
+        _ => {}
+    }
+
+    let result = file.set_len(0);
+    match result {
+        Err(error) => {
+            println!("Unknown error truncating project file '{}'. Please file an issue: https://github.com/drazisil/nodepm/issues/new", error);
+            std::process::exit(-1);
+        },
+        _ => {}
+    }
+
+    let result = project_json.write_pretty(&mut file, 2);
+    match result {
+        Err(error) => {
+            println!("Unknown error writing project file '{}'. Please file an issue: https://github.com/drazisil/nodepm/issues/new", error);
+            std::process::exit(-1);
+        },
+        _ => {}
+    }
 }
 
 fn main() {
