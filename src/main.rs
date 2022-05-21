@@ -1,6 +1,8 @@
 //! Test?
 
-use clap::{Parser, Subcommand};
+use quicli::prelude::*;
+use structopt::StructOpt;
+
 use json::object;
 use std::error::Error;
 use std::fs::OpenOptions;
@@ -9,39 +11,38 @@ use std::fs::OpenOptions;
 
 const REGISTRY_HOST: &str = "https://registry.npmjs.com";
 
-#[derive(Parser)]
-#[clap(author, version, about, long_about = None)]
-#[clap(propagate_version = true)]
+#[derive(Debug, StructOpt)]
+#[structopt(name = "nodepm")]
 struct Cli {
-    /// Required for dangerous operations
-    #[clap(long)]
-    force: bool,
-
     // Subcommands
-    #[clap(subcommand)]
+    #[structopt(subcommand)]
     command: Commands,
+
+    #[structopt(flatten)]
+    verbosity: Verbosity,
 }
 
-#[derive(Subcommand)]
+#[derive(Debug, StructOpt)]
 enum Commands {
     /// Initialize a new project (use "init --force" to overwrite an existing one)
+    #[structopt(name = "init")]
     Init {
         /// Overwrite an existing project
-        #[clap(long)]
+        #[structopt(long = "force")]
         force: bool,
 
         project_name: String,
 
         /// defaults to the current directory
-        #[clap(default_value = ".", hide_default_value = true)]
+        #[structopt(default_value = ".")]
         path: std::path::PathBuf,
     },
     /// Inspect a package
+    #[structopt(name = "inspect")]
     Inspect {
         project_name: String,
 
         /// Package version [default: 'latest']
-        #[clap(default_value = "latest", hide_default_value = true)]
         version: String,
     },
 }
@@ -56,7 +57,7 @@ fn error_and_exit(error_message: &str, origional_message: &(dyn Error + 'static)
     std::process::exit(-1)
 }
 
-fn init_project(project_name: &str, path: std::path::PathBuf, force: bool) {
+fn init_project(project_name: &str, path: std::path::PathBuf, force: bool) -> CliResult {
     println!(
         "Initializing a new project named {:?} in {:?}, force: {:?}",
         project_name, path, force
@@ -125,11 +126,11 @@ fn init_project(project_name: &str, path: std::path::PathBuf, force: bool) {
             );
             std::process::exit(-1);
         }
-        _ => {}
+        _ => {Ok(())}
     }
 }
 
-fn inspect_project(package_name: &str, version: &str) {
+fn inspect_package(package_name: &str, version: &str) -> CliResult {
     println!(
         "Inspecting the package named {:?} at version {:?}",
         package_name, version
@@ -202,11 +203,12 @@ fn inspect_project(package_name: &str, version: &str) {
     println!(
         "download_url: {}",
         response_json["versions"][requested_version]["dist"]["tarball"]
-    )
+    );
+    Ok(())
 }
 
-fn main() {
-    let cli = Cli::parse();
+fn main() -> CliResult {
+    let cli = Cli::from_args();
 
     match &cli.command {
         Commands::Init {
@@ -217,6 +219,6 @@ fn main() {
         Commands::Inspect {
             project_name,
             version,
-        } => inspect_project(project_name, version),
+        } => inspect_package(project_name, version),
     }
 }
