@@ -6,7 +6,8 @@ description = "A Node.js project manager"
 homepage = "https://github.com/drazisil/nodepm"
 repository = "https://github.com/drazisil/nodepm"
 authors = ["Drazi Crendraven <drazisil@hey.com>"]
-licence = "AGPL-3.0"
+license = "AGPL-3.0-or-later"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
