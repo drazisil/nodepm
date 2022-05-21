@@ -1,7 +1,11 @@
+//! Test?
+
 use clap::{Parser, Subcommand};
 use json::object;
 use std::error::Error;
 use std::fs::OpenOptions;
+
+
 
 const REGISTRY_HOST: &str = "https://registry.npmjs.com";
 
