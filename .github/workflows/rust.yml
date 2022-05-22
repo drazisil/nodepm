@@ -37,6 +37,7 @@ jobs:
         command: test
         args: --verbose
       env:
+        CARGO_INCREMENTAL: '0'
         # https://github.com/partiql/partiql-lang-rust/blob/c0524b2faa966122222f2c02ee38a7bf318fe8a5/.github/workflows/coverage.yml#L39
         RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off'
         RUSTDOCFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off'
