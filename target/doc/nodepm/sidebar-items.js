@@ -1,1 +1,0 @@
-initSidebarItems({"constant":[["REGISTRY_HOST","https://registry.npmjs.com"]],"enum":[["Commands",""]],"fn":[["main",""]],"mod":[["nodepm",""]],"struct":[["Cli",""]]});
