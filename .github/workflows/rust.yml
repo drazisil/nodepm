@@ -20,18 +20,21 @@ jobs:
     - name: Build verbose
       uses: actions-rs/cargo@v1.0.1
       with:
-        command: build --verbose
+        command: build
+        args: --verbose
 
     - name: Run tests
       uses: actions-rs/cargo@v1.0.1
       with:
-        command: test --verbose
+        command: test
+        args: --verbose
         
 
     - name: Generate docs
       uses: actions-rs/cargo@v1.0.1
       with:
-        command: doc --no-dep --verbose        
+        command: doc
+        args: --no-dep --verbose        
         
     - name: Archive docs
       uses: actions/upload-artifact@v3
