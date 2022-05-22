@@ -11,12 +11,14 @@
 
 //! Test?
 
+/// Core functionality
 mod nodepm;
-use nodepm::package::inspect_package;
-use nodepm::project::init_project;
+pub use nodepm::{query_package_reqistry, create_project_manifest};
+/// Binary CLI
 mod cli;
 use cli::{Cli, Commands};
 use anyhow::Result;
+extern crate clap;
 use clap::Parser;
 
 
@@ -25,7 +27,7 @@ const REGISTRY_HOST: &str = "https://registry.npmjs.com";
 
 
 
-
+#[doc(hidden)]
 fn main() -> Result<()> {
     let cli = Cli::parse();
 
@@ -34,10 +36,10 @@ fn main() -> Result<()> {
             project_name,
             path,
             force,
-        } => init_project(&project_name, path.to_path_buf(), *force),
+        } => create_project_manifest(&project_name, path.to_path_buf(), *force),
         Commands::Inspect {
             project_name,
             version,
-        } => inspect_package(REGISTRY_HOST, &project_name, &version),
+        } => query_package_reqistry(REGISTRY_HOST, &project_name, &version),
     }
 }

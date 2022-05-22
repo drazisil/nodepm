@@ -1,7 +1,54 @@
 use anyhow::{ anyhow, Result};
+use json::JsonValue;
+
+#[derive(Debug)]
+pub struct NPMPackageInfo {
+    /// Name of the package
+    pub name: String,
+
+    /// Version of the package
+    pub version: String,
+
+    // SHA1 of the package
+    pub shasum: String,
+
+    /// SHA512 of the package
+    pub integrity: String,
+
+    /// Tarball download URL
+    pub tarball: String
+}
+
+impl From<& mut json::JsonValue> for NPMPackageInfo {
+    fn from(json: & mut json::JsonValue) -> Self {
+        let package_version = &json["version"].to_string().clone();
+        return Self { 
+            name: json["name"].to_string(),
+            version: package_version.to_string(),
+            shasum: json["versions"][package_version]["dist"]["shasum"].to_string(),
+            integrity: json["versions"][package_version]["dist"]["integrity"].to_string(),
+            tarball: json["versions"][package_version]["dist"]["tarball"].to_string()
+        };
+    }
+
+}
+
+impl NPMPackageInfo {
+    fn from_json(json: & mut json::JsonValue, name: &str, version: &str) -> Self {
+        json["name"] =  JsonValue::from(name);
+        json["version"] = JsonValue::from(version);
+        return NPMPackageInfo::from(json);
+    }
+
+}
 
 /// Query the `registry_host` for `package_name`, and return information for `version`
-pub fn inspect_package(registry_host: &str, package_name: &str, version: &str) -> Result<()> {
+/// 
+/// Example
+/// ```rust
+/// query_package_registry("https://registry.npmjs.com", "nodepm", "latest");
+/// ```
+pub fn query_package_reqistry(registry_host: &str, package_name: &str, version: &str) -> Result<()> {
     println!(
         "Inspecting the package named {:?} at version {:?}",
         package_name, version
@@ -53,23 +100,17 @@ pub fn inspect_package(registry_host: &str, package_name: &str, version: &str) -
         Ok(response) => response,
     };
 
+
+    let mut mut_json = JsonValue::clone(&response_json);
+
     // Lets get the version blob
     let requested_version = match version {
-        "latest" => response_json["dist-tags"]["latest"].as_str().unwrap_or(""),
+        "latest" => {response_json["dist-tags"]["latest"].as_str().unwrap_or("") },
         _ => version,
     };
 
-    println!(
-        "SHA1: {}",
-        response_json["versions"][requested_version]["dist"]["shasum"]
-    );
-    println!(
-        "SHA512: {}",
-        response_json["versions"][requested_version]["dist"]["integrity"]
-    );
-    println!(
-        "download_url: {}",
-        response_json["versions"][requested_version]["dist"]["tarball"]
-    );
+    let package_info = NPMPackageInfo::from_json(& mut mut_json, package_name, requested_version);
+
+    println!("{:#?}", package_info);
     Ok(())
 }

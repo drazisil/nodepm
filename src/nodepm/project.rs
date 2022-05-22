@@ -3,7 +3,7 @@ use json::object;
 use std::fs::OpenOptions;
 
 /// Create a new package.json file at `path` and set the name to `project_name`
-pub fn init_project(project_name: &str, path: std::path::PathBuf, force: bool) -> Result<()> {
+pub fn create_project_manifest(project_name: &str, path: std::path::PathBuf, force: bool) -> Result<()> {
     println!(
         "Initializing a new project named {:?} in {:?}, force: {:?}",
         project_name, path, force

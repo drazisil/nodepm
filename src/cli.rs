@@ -12,7 +12,7 @@ pub struct Cli {
     verbose: Verbosity
 }
 
-#[derive(Debug, Parser)]
+#[derive(Parser)]
 pub enum Commands {
     /// Initialize a new project (use "init --force" to overwrite an existing one)
     #[structopt(name = "init")]
