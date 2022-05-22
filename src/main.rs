@@ -3,20 +3,25 @@
 mod nodepm;
 use nodepm::package::inspect_package;
 use nodepm::project::init_project;
-use quicli::prelude::*;
-use structopt::StructOpt;
+use anyhow::Result;
+use clap::Parser;
+use clap_verbosity_flag::Verbosity;
 
+/// <https://registry.npmjs.com>
 const REGISTRY_HOST: &str = "https://registry.npmjs.com";
 
-#[derive(StructOpt)]
+#[derive(Parser)]
 #[structopt(name = "nodepm")]
 struct Cli {
     // Subcommands
     #[structopt(subcommand)]
     command: Commands,
+
+    #[structopt(flatten)]
+    verbose: Verbosity
 }
 
-#[derive(Debug, StructOpt)]
+#[derive(Debug, Parser)]
 enum Commands {
     /// Initialize a new project (use "init --force" to overwrite an existing one)
     #[structopt(name = "init")]
@@ -25,9 +30,10 @@ enum Commands {
         #[structopt(long = "force")]
         force: bool,
 
+        /// The name to add to the package.json file
         project_name: String,
 
-        /// defaults to the current directory
+        /// The `path` to create a the project in. Defaults to the current directory (`.`)
         #[structopt(default_value = ".")]
         path: std::path::PathBuf,
     },
@@ -42,8 +48,8 @@ enum Commands {
 }
 
 
-fn main() -> CliResult {
-    let cli = Cli::from_args();
+fn main() -> Result<()> {
+    let cli = Cli::parse();
 
     match &cli.command {
         Commands::Init {

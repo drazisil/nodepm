@@ -1,11 +1,10 @@
+use anyhow::{anyhow, Result};
 use json::object;
-use quicli::prelude::*;
 use std::fs::OpenOptions;
-use super::error::error_and_exit;
 
-
-pub fn init_project(project_name: &str, path: std::path::PathBuf, force: bool) -> CliResult {
-    info!(
+/// Create a new package.json file at `path` and set the name to `project_name`
+pub fn init_project(project_name: &str, path: std::path::PathBuf, force: bool) -> Result<()> {
+    println!(
         "Initializing a new project named {:?} in {:?}, force: {:?}",
         project_name, path, force
     );
@@ -27,14 +26,12 @@ pub fn init_project(project_name: &str, path: std::path::PathBuf, force: bool) -
         Err(error) => {
             match error.kind() {
                 std::io::ErrorKind::AlreadyExists => {
-                    println!(
+                    return Err(anyhow!(
                         "The file already exists. Use 'init --force' if you want to overwrite it."
-                    );
-                    std::process::exit(-1)
+                    ));
                 }
                 _ => {
-                    println!("Unknown error creating project file '{}'. Please file an issue: {}/issues/new", error, env!("CARGO_PKG_REPOSITORY"));
-                    std::process::exit(-1)
+                    return Err(anyhow!("Unknown error creating project file '{}'. Please file an issue: {}/issues/new", error, env!("CARGO_PKG_REPOSITORY")));
                 }
             };
         }
@@ -43,22 +40,21 @@ pub fn init_project(project_name: &str, path: std::path::PathBuf, force: bool) -
     let mut project_json = object! {};
     let result = project_json.insert("name", project_name);
     match result {
-        Err(error) => error_and_exit(
-            "Unknown error truncating adding name to json array on project file",
-            &error,
-        ),
+        Err(error) => { return Err(anyhow!(
+            "Unknown error truncating adding name to json array on project file: {}",
+            error,
+        ))},
         _ => {}
     }
 
     let result = file.set_len(0);
     match result {
         Err(error) => {
-            println!(
+            return Err(anyhow!(
                 "Unknown error truncating project file '{}'. Please file an issue: {}/issues/new",
                 error,
                 env!("CARGO_PKG_REPOSITORY")
-            );
-            std::process::exit(-1);
+            ));
         }
         _ => {}
     }
@@ -66,13 +62,12 @@ pub fn init_project(project_name: &str, path: std::path::PathBuf, force: bool) -
     let result = project_json.write_pretty(&mut file, 2);
     match result {
         Err(error) => {
-            println!(
+            return Err(anyhow!(
                 "Unknown error writing project file '{}'. Please file an issue: {}/issues/new",
                 error,
                 env!("CARGO_PKG_REPOSITORY")
-            );
-            std::process::exit(-1);
+            ));
         }
-        _ => {Ok(())}
+        _ => Ok(()),
     }
 }
