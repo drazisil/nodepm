@@ -34,7 +34,7 @@ jobs:
       uses: actions-rs/cargo@v1.0.1
       with:
         command: doc
-        args: --no-dep --verbose        
+        args: --no-deps --verbose        
         
     - name: Archive docs
       uses: actions/upload-artifact@v3
