@@ -1,6 +1,6 @@
 target/debug
 target/package
 target/rls
-target/.*
+target
 .dccache
 package.json
