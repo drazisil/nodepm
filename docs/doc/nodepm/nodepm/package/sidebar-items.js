@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["query_package_reqistry","Query the `registry_host` for `package_name`, and return information for `version`"]],"struct":[["NPMPackageInfo",""]]});

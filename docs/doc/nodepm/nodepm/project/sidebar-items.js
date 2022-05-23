@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["create_project_manifest","Create a new package.json file at `path` and set the name to `project_name`"]]});
