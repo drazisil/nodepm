@@ -1,4 +1,4 @@
-use clap::Parser;
+use clap::{ Args, Parser, Subcommand };
 use clap_verbosity_flag::Verbosity;
 
 #[derive(Parser)]
@@ -12,28 +12,35 @@ pub struct Cli {
     verbose: Verbosity
 }
 
-#[derive(Parser)]
-pub enum Commands {
-    /// Initialize a new project (use "init --force" to overwrite an existing one)
-    #[structopt(name = "init")]
-    Init {
+#[derive(Args)]
+pub struct InitArgs {
         /// Overwrite an existing project
-        #[structopt(long = "force")]
-        force: bool,
+        #[clap(long = "force")]
+        pub force: bool,
 
         /// The name to add to the package.json file
-        project_name: String,
+        pub project_name: String,
 
         /// The `path` to create a the project in. Defaults to the current directory (`.`)
-        #[structopt(default_value = ".")]
-        path: std::path::PathBuf,
-    },
-    /// Inspect a package
-    #[structopt(name = "inspect")]
-    Inspect {
-        project_name: String,
+        #[clap(default_value = ".")]
+        pub path: std::path::PathBuf,
 
-        /// Package version [default: 'latest']
-        version: String,
-    },
+}
+
+#[derive(Args)]
+pub struct InspectArgs {
+    pub project_name: String,
+
+    /// Package version [default: 'latest']
+    pub version: String,
+}
+
+#[derive(Subcommand)]
+pub enum Commands {
+    /// Initialize a new project (use "init --force" to overwrite an existing one)
+    #[clap(name = "init")]
+    Init(InitArgs),
+    /// Inspect a package
+    #[clap(name = "inspect")]
+    Inspect(InspectArgs),
 }

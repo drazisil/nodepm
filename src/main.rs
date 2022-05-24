@@ -32,14 +32,11 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
 
     match &cli.command {
-        Commands::Init {
-            project_name,
-            path,
-            force,
-        } => create_project_manifest(&project_name, path.to_path_buf(), *force),
-        Commands::Inspect {
-            project_name,
-            version,
-        } => query_package_reqistry(REGISTRY_HOST, &project_name, &version),
+        Commands::Init(args) => {
+            create_project_manifest(&args.project_name, args.path.to_path_buf(), args.force) 
+        },
+        Commands::Inspect(args)  => {
+            query_package_reqistry(REGISTRY_HOST, &args.project_name, &args.version) 
+        },
     }
 }
