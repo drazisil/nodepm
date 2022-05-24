@@ -1,5 +1,14 @@
 # 2022
 
+## 0.2.0
+
+* Happy that 0.1.0 published to crates.io
+* Sad that docs.rs only works with libaries, not binaries
+* Debated making into a library as well
+* ... Realized this chagelog is supposted to be about the code
+* Figured out nested subcommands and wrote a post: https://dev.to/drazisil/nested-subcommands-in-rest-with-clap-4n5m
+* Bumped to vestion 0.2.0 since changing the commands from `nodepm inspect` to `nodepm package inspect` feels like a breaking change
+
 ## 0.1.0
 
 * Initial release

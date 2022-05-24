@@ -1,6 +1,6 @@
 [package]
 name = "nodepm"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "A Node.js project manager"
 homepage = "https://github.com/drazisil/nodepm"
