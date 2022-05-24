@@ -9,6 +9,7 @@ authors = ["Drazi Crendraven <drazisil@hey.com>"]
 license = "AGPL-3.0-or-later"
 readme = "README.md"
 documentation = "https://docs.rs/nodepm"
+exclude = ["/npm_registry_reference", "/.github"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
