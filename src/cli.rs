@@ -12,8 +12,50 @@ pub struct Cli {
     verbose: Verbosity
 }
 
+#[derive(Parser)]
+pub struct Project {
+         #[structopt(subcommand)]
+        pub project_commands: ProjectCommands,
+}
+
+#[derive(Parser)]
+pub struct Package {
+         #[structopt(subcommand)]
+        pub package_commands: PackageCommands,
+}
+
 #[derive(Args)]
-pub struct InitArgs {
+pub struct InspectArgs {
+    pub project_name: String,
+
+    /// Package version [default: 'latest']
+    pub version: String,
+}
+
+#[derive(Subcommand)]
+pub enum Commands {
+    /// Project commands
+    #[clap(name = "project")]
+    Project(Project),
+    /// Package commands
+    #[clap(name = "package")]
+    Package(Package),
+}
+
+#[derive(Subcommand)]
+pub enum ProjectCommands {
+    /// Initialize a new project (use "init --force" to overwrite an existing one)
+    Init(ProjectInitArgs)
+}
+
+#[derive(Subcommand)]
+pub enum PackageCommands {
+    /// Inspect a package
+    Inspect(PackageInspectArgs)
+}
+
+#[derive(Args)]
+pub struct ProjectInitArgs {
         /// Overwrite an existing project
         #[clap(long = "force")]
         pub force: bool,
@@ -28,19 +70,9 @@ pub struct InitArgs {
 }
 
 #[derive(Args)]
-pub struct InspectArgs {
+pub struct PackageInspectArgs {
     pub project_name: String,
 
     /// Package version [default: 'latest']
     pub version: String,
-}
-
-#[derive(Subcommand)]
-pub enum Commands {
-    /// Initialize a new project (use "init --force" to overwrite an existing one)
-    #[clap(name = "init")]
-    Init(InitArgs),
-    /// Inspect a package
-    #[clap(name = "inspect")]
-    Inspect(InspectArgs),
 }

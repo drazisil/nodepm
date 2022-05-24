@@ -13,30 +13,35 @@
 
 /// Core functionality
 mod nodepm;
-pub use nodepm::{query_package_reqistry, create_project_manifest};
+pub use nodepm::{create_project_manifest, query_package_reqistry};
 /// Binary CLI
 mod cli;
-use cli::{Cli, Commands};
 use anyhow::Result;
+use cli::{Cli, Commands, PackageCommands, ProjectCommands};
 extern crate clap;
 use clap::Parser;
 
-
 /// <https://registry.npmjs.com>
 const REGISTRY_HOST: &str = "https://registry.npmjs.com";
-
-
 
 #[doc(hidden)]
 fn main() -> Result<()> {
     let cli = Cli::parse();
 
     match &cli.command {
-        Commands::Init(args) => {
-            create_project_manifest(&args.project_name, args.path.to_path_buf(), args.force) 
+        Commands::Project(args) => match &args.project_commands {
+            ProjectCommands::Init(args) => {
+                return create_project_manifest(
+                    &args.project_name,
+                    args.path.to_path_buf(),
+                    args.force,
+                );
+            }
         },
-        Commands::Inspect(args)  => {
-            query_package_reqistry(REGISTRY_HOST, &args.project_name, &args.version) 
+        Commands::Package(args) => match &args.package_commands {
+            PackageCommands::Inspect(args) => {
+                return query_package_reqistry(REGISTRY_HOST, &args.project_name, &args.version)
+            }
         },
     }
 }
