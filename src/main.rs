@@ -31,16 +31,16 @@ fn main() -> Result<()> {
     match &cli.command {
         Commands::Project(args) => match &args.project_commands {
             ProjectCommands::Init(args) => {
-                return create_project_manifest(
+                create_project_manifest(
                     &args.project_name,
                     args.path.to_path_buf(),
                     args.force,
-                );
+                )
             }
         },
         Commands::Package(args) => match &args.package_commands {
             PackageCommands::Inspect(args) => {
-                return query_package_reqistry(REGISTRY_HOST, &args.project_name, &args.version)
+                query_package_reqistry(REGISTRY_HOST, &args.project_name, &args.version)
             }
         },
     }

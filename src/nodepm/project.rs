@@ -3,7 +3,11 @@ use json::object;
 use std::fs::OpenOptions;
 
 /// Create a new package.json file at `path` and set the name to `project_name`
-pub fn create_project_manifest(project_name: &str, path: std::path::PathBuf, force: bool) -> Result<()> {
+pub fn create_project_manifest(
+    project_name: &str,
+    path: std::path::PathBuf,
+    force: bool,
+) -> Result<()> {
     println!(
         "Initializing a new project named {:?} in {:?}, force: {:?}",
         project_name, path, force
@@ -39,25 +43,21 @@ pub fn create_project_manifest(project_name: &str, path: std::path::PathBuf, for
 
     let mut project_json = object! {};
     let result = project_json.insert("name", project_name);
-    match result {
-        Err(error) => { return Err(anyhow!(
+    if let Err(error) = result {
+        return Err(anyhow!(
             "Unknown error truncating adding name to json array on project file: {}",
             error,
-        ))},
-        _ => {}
+        ));
     }
 
     let result = file.set_len(0);
-    match result {
-        Err(error) => {
-            return Err(anyhow!(
-                "Unknown error truncating project file '{}'. Please file an issue: {}/issues/new",
-                error,
-                env!("CARGO_PKG_REPOSITORY")
-            ));
-        }
-        _ => {}
-    }
+    if let Err(error) = result {
+        return Err(anyhow!(
+            "Unknown error truncating project file '{}'. Please file an issue: {}/issues/new",
+            error,
+            env!("CARGO_PKG_REPOSITORY")
+        ));
+    };
 
     let result = project_json.write_pretty(&mut file, 2);
     match result {

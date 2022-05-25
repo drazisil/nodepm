@@ -21,14 +21,14 @@ pub struct NPMPackageInfo {
 
 impl From<& mut json::JsonValue> for NPMPackageInfo {
     fn from(json: & mut json::JsonValue) -> Self {
-        let package_version = &json["version"].to_string().clone();
-        return Self { 
+        let package_version = &json["version"].to_string();
+        Self { 
             name: json["name"].to_string(),
             version: package_version.to_string(),
             shasum: json["versions"][package_version]["dist"]["shasum"].to_string(),
             integrity: json["versions"][package_version]["dist"]["integrity"].to_string(),
             tarball: json["versions"][package_version]["dist"]["tarball"].to_string()
-        };
+        }
     }
 
 }
@@ -37,7 +37,7 @@ impl NPMPackageInfo {
     fn from_json(json: & mut json::JsonValue, name: &str, version: &str) -> Self {
         json["name"] =  JsonValue::from(name);
         json["version"] = JsonValue::from(version);
-        return NPMPackageInfo::from(json);
+        NPMPackageInfo::from(json)
     }
 
 }
