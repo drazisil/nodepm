@@ -3,6 +3,17 @@ use json::object;
 use std::fs::OpenOptions;
 
 /// Create a new package.json file at `path` and set the name to `project_name`
+/// 
+/// # Errors
+/// 
+/// Will return `Err` in the following cases:
+/// * Attempting to create a project in a directory where one already exists and `--force` is not passed
+/// * There is an unknown ios error on file creation
+/// * There is an unknown error on adding the name to the JSON object
+/// * There is an error truncating the project file
+/// * There is an error writing the project file
+/// 
+/// # TODO: Reduce error cases by bubbling or handling errors <https://github.com/drazisil/nodepm/issues/10>
 pub fn create_project_manifest(
     project_name: &str,
     path: &std::path::PathBuf,
