@@ -48,6 +48,16 @@ impl NPMPackageInfo {
 /// ```rust
 /// query_package_registry("https://registry.npmjs.com", "nodepm", "latest");
 /// ```
+/// 
+/// # Errors
+/// 
+/// Will return `Err` in the following cases:
+/// * Server error when querying the npm registry
+/// * IO/Transport error when querying the npm registry
+/// * Error parsing the response body into a string
+/// * Error parsing the response body string into JSON
+/// 
+/// # TODO: Reduce error cases by bubbling or handling errors <https://github.com/drazisil/nodepm/issues/10>
 pub fn query_package_reqistry(registry_host: &str, package_name: &str, version: &str) -> Result<()> {
     println!(
         "Inspecting the package named {:?} at version {:?}",
