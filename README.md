@@ -29,4 +29,4 @@ Please read [CONTRIBUTING.md](https://github.com/drazisil/nodepm/blob/main/CONTR
 
 ## License
 
-This project is licensed under the GNU Affero General Public License (AGPL) - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GNU Affero General Public License (AGPL) - see the [LICENSE](LICENSE) file for details
