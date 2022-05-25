@@ -104,7 +104,7 @@ pub fn query_package_reqistry(registry_host: &str, package_name: &str, version: 
     let result = json::parse(&response_body);
 
     let response_json = match result {
-        Err(error) => { 
+        Err(error) => {
             return Err(anyhow!("Unknown error transforming response into JSON '{}'. Please file an issue: {}/issues/new", error, env!("CARGO_PKG_REPOSITORY")))
         }
         Ok(response) => response,
