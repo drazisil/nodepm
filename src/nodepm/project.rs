@@ -17,7 +17,7 @@ pub fn create_project_manifest(
     let result = if force {
         OpenOptions::new()
             .write(true)
-            .create_new(true)
+            .create(true)
             .open(path.with_file_name(file_name))
     } else {
         OpenOptions::new()
