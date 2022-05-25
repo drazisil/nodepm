@@ -33,7 +33,7 @@ fn main() -> Result<()> {
             ProjectCommands::Init(args) => {
                 create_project_manifest(
                     &args.project_name,
-                    args.path.to_path_buf(),
+                    args.path.clone(),
                     args.force,
                 )
             }
