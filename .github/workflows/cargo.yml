@@ -1,0 +1,44 @@
+name: Cargo Build & Test
+
+on:
+  push:
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: '0'
+  # https://github.com/partiql/partiql-lang-rust/blob/c0524b2faa966122222f2c02ee38a7bf318fe8a5/.github/workflows/coverage.yml#L39
+  RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off'
+  RUSTDOCFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off'  
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Rust Toolchain
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        # nightly can be very volatile--pin this to a version we know works well...
+        toolchain: nightly-2022-01-10
+        override: true    
+
+    - name: Build and Test
+      uses: actions-rs/cargo@v1.0.1
+      with:
+        command: test      
+        
+    - id: coverage
+      name: Code Coverage
+      uses: actions-rs/grcov@v0.1
+    - name: Codecov Upload
+      uses: codecov/codecov-action@v3.1.0
+      with:
+        files: ${{ steps.coverage.outputs.report }}
+        fail_ci_if_error: true
+        verbose: true
+      

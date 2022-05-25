@@ -1,13 +1,13 @@
-name: Rust
+name: Cargo Build & Test - Docs, Artifacts
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+on: workflow_dispatch
 
 env:
   CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: '0'
+  # https://github.com/partiql/partiql-lang-rust/blob/c0524b2faa966122222f2c02ee38a7bf318fe8a5/.github/workflows/coverage.yml#L39
+  RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off'
+  RUSTDOCFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off'  
 
 jobs:
   build:
@@ -25,23 +25,11 @@ jobs:
         toolchain: nightly-2022-01-10
         override: true    
 
-    - name: Build verbose
-      uses: actions-rs/cargo@v1.0.1
-      with:
-        command: build
-        args: --verbose
-
-    - name: Run tests
+    - name: Build and Test
       uses: actions-rs/cargo@v1.0.1
       with:
         command: test
-        args: --verbose
-      env:
-        CARGO_INCREMENTAL: '0'
-        # https://github.com/partiql/partiql-lang-rust/blob/c0524b2faa966122222f2c02ee38a7bf318fe8a5/.github/workflows/coverage.yml#L39
-        RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off'
-        RUSTDOCFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off'
-        
+        args: --verbose       
 
     - name: Generate docs
       uses: actions-rs/cargo@v1.0.1
