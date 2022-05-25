@@ -14,15 +14,16 @@ pub fn create_project_manifest(
     );
     let file_name = "package.json";
 
-    let result = match force {
-        false => OpenOptions::new()
+    let result = if force {
+        OpenOptions::new()
             .write(true)
             .create_new(true)
-            .open(path.with_file_name(file_name)),
-        true => OpenOptions::new()
+            .open(path.with_file_name(file_name))
+    } else {
+        OpenOptions::new()
             .write(true)
-            .create(true)
-            .open(path.with_file_name(file_name)),
+            .create_new(true)
+            .open(path.with_file_name(file_name))
     };
 
     let mut file = match result {
