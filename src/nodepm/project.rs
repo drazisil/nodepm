@@ -5,7 +5,7 @@ use std::fs::OpenOptions;
 /// Create a new package.json file at `path` and set the name to `project_name`
 pub fn create_project_manifest(
     project_name: &str,
-    path: std::path::PathBuf,
+    path: &std::path::PathBuf,
     force: bool,
 ) -> Result<()> {
     println!(
