@@ -30,8 +30,7 @@ jobs:
     - name: Build and Test
       uses: actions-rs/cargo@v1.0.1
       with:
-        command: test
-        args: --verbose         
+        command: test      
         
     - id: coverage
       name: Code Coverage
