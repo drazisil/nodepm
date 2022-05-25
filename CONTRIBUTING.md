@@ -36,7 +36,7 @@ If you are interested in contributing to this project, you will need to understa
 
 * We are using [Rust](https://www.rust-lang.org/)
 
-* A good attitude. Please review the [code of conduct](https://github.com/drazisil/nodepm/blob/main/CODE_OF_CONDUCT.md). Your "right to free speech" does not exempt you from our "right to have a safe and inclusive space". If you really feel the need to wonder if something isn't allowed, it probably isn't. 
+* A good attitude. Please review the [code of conduct](CODE_OF_CONDUCT.md). Your "right to free speech" does not exempt you from our "right to have a safe and inclusive space". If you really feel the need to wonder if something isn't allowed, it probably isn't. 
 
 ## Building
 
