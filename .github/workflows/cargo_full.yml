@@ -26,13 +26,13 @@ jobs:
         override: true    
 
     - name: Build and Test
-      uses: actions-rs/cargo@v1.0.1
+      uses: actions-rs/cargo@v1.0.3
       with:
         command: test
         args: --verbose       
 
     - name: Generate docs
-      uses: actions-rs/cargo@v1.0.1
+      uses: actions-rs/cargo@v1.0.3
       with:
         command: rustdoc        
         
